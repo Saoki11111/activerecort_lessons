@@ -2,9 +2,12 @@ require 'active_record'
 require 'pp'
 # undefined method 'find_zone!' となるので 追加
 require "active_support/all"
+require 'logger'
 
 Time.zone_default = Time.find_zone! 'Tokyo'
 ActiveRecord::Base.default_timezone = :local
+
+ActiveRecord::Base.logger = Logger.new(STDOUT)
 
 ActiveRecord::Base.establish_connection(
   "adapter" => "sqlite3",
@@ -17,16 +20,9 @@ end
 
 # insert
 
-# User クラスのインスタンスの作成 しレコードを操作する
-user = User.new
-user.name = "tanaka"
-user.age = 23
-user.save
+user = User.new do |u|
+  u.name = "mochizuki"
+  u.age = 18
+end
 
-# ↑ は↓ のように書ける
-# user = User.new(:name => "hayashi", age: => 25) 
-user = User.new(name: "hayashi", age: 25) 
 user.save
-
-# new と save をまとめて create で実行
-user = User.create(name: "hoshi", age: 22) 
