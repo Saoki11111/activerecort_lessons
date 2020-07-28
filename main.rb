@@ -26,12 +26,24 @@ User.create(name: "hayashi", age: 31)
 User.create(name: "mizutani", age: 28)
 User.create(name: "otsuka", age: 35)
 
-# pp User.find(3) # id が 3 のレコード
-# pp User.select("id, name, age").find(3) #id が 3 のフィールド とレコード
-# pp User.select("id, name, age").find_by(name: "tanaka") # name = tanaka のレコード
-# pp User.select("id, name, age").find_by name: "tanaka" # ↑ の省略形
-# pp User.select("id, name, age").find_by_name "tanaka" # ↑ と同様
-# pp User.select("id, name, age").find_by_name("tanaka") # ↑ と同様
+# where 範囲オブジェクト
 
-pp User.select("id, name, age").find_by_name("kiriya") # 存在しないフィールドは nill になる
-pp User.select("id, name, age").find_by_name!("kiriya") # 存在しないフィールドでは エラーを出す
+# pp User.select("id, name, age").where(age: 20..29) # 年齢が 20-29 の間 のみのフィールド
+# pp User.select("id, name, age").where(age: 20..29) # 年齢が 20-29 の間 のみのフィールド
+# pp User.select("id, name, age").where(age: [19, 31]) # 年齢が 19 と 31 のみのフィールド
+
+# AND
+
+# pp User.select("id, name, age").where("age >= 20").where("age < 30") # 年齢が 20 以上 30 未満のフィールド 
+# pp User.select("id, name, age").where("age >= 20 and age < 30") # ↑ の省略形 
+
+# OR
+
+# pp User.select("id, name, age").where("age <= 20 or age >= 30") # 20歳以下 30歳以上
+# pp User.select("id, name, age").where("age <= 20").or(
+#   User.select("id, name, age").where("age >= 30")) # ↑ or を使用
+pp User.where("age <= 20").or(User.where("age >= 30")).select("id, name, age") # select を省略
+
+# NOT
+
+pp User.select("id, name, age").where.not(id: 3) # id が 3 以外 
