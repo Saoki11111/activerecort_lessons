@@ -26,24 +26,11 @@ User.create(name: "hayashi", age: 31)
 User.create(name: "mizutani", age: 28)
 User.create(name: "otsuka", age: 35)
 
-# where 範囲オブジェクト
+min = 20
+max = 30
 
-# pp User.select("id, name, age").where(age: 20..29) # 年齢が 20-29 の間 のみのフィールド
-# pp User.select("id, name, age").where(age: 20..29) # 年齢が 20-29 の間 のみのフィールド
-# pp User.select("id, name, age").where(age: [19, 31]) # 年齢が 19 と 31 のみのフィールド
+# pp User.select("id, name, age").where("age <= #{min} and age >= #{max}") # NG!! 悪意のある値が入る
 
-# AND
-
-# pp User.select("id, name, age").where("age >= 20").where("age < 30") # 年齢が 20 以上 30 未満のフィールド 
-# pp User.select("id, name, age").where("age >= 20 and age < 30") # ↑ の省略形 
-
-# OR
-
-# pp User.select("id, name, age").where("age <= 20 or age >= 30") # 20歳以下 30歳以上
-# pp User.select("id, name, age").where("age <= 20").or(
-#   User.select("id, name, age").where("age >= 30")) # ↑ or を使用
-pp User.where("age <= 20").or(User.where("age >= 30")).select("id, name, age") # select を省略
-
-# NOT
-
-pp User.select("id, name, age").where.not(id: 3) # id が 3 以外 
+# pp User.select("id, name, age").where("age > ? and age < ?", min, max) # プレースホルダー
+pp User.select("id, name, age").where("age > :min and age < :max", {min: min, max: max}) # もしくはシンボル
+pp User.select("id, name, age").where("name like ?", "%i") # 文字列の部分一致 i で終わる
